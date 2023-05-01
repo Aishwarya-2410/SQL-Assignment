@@ -1,0 +1,37 @@
+Day 5 Assignments: 
+(create required tables and insert few records as per below assignments)
+
+Create a ‘DEPT_CRUD_PROC’ PLSQL procedure that you created in step 1 to insert a new department into the
+departments table. Save your script as lab_08_02_soln.sql. 
+a.    Declare two variables: v_dept_name of type departments.department_name and v_dept_id of type NUMBER
+b.    Assign 'Education' to v_dept_name in the declarative section.
+c.    You have already retrieved the current maximum department number from the departments table. Add 10 to it and assign the result to v_dept_id.
+d.    Include an INSERT statement to insert data into the department_name, department_id, and location_id columns of the departments table.
+e.    Use values in v_dept_name and v_dept_id for department_name and department_id, respectively, and use NULL for location_id.
+f.    Use the SQL attribute SQL%ROWCOUNT to display the number of rows that are affected.
+g.    Execute a SELECT statement to check whether the new department is inserted. You can terminate the PL/SQL block with “/” and include the SELECT statement in your script.
+
+ 
+
+3.    Modify Save your script as lab_08_02_soln.sql. include below logic. 
+a.    Include the UPDATE statement to set the location_id to 3000 for the new department (dept_id =280).
+b.    Include a DELETE statement to delete the department that you added. Save your script as lab_08_03_soln.sql.
+
+
+SOLUTION:
+
+
+create or replace PROCEDURE DEPT_CRUD_PROC AS
+v_dept_id NUMBER;
+v_dept_name departments.department_name%type;
+BEGIN
+v_dept_name :='Education';
+SELECT MAX(department_id) INTO v_dept_id from departments;
+v_dept_id := v_dept_id + 10;
+DBMS_OUTPUT.PUT_LINE('department id '|| v_dept_id);
+INSERT INTO departments values(v_dept_id,v_dept_name,NULL);
+DBMS_OUTPUT.PUT_LINE('SQLROWCOUNT '|| SQL%ROWCOUNT);
+UPDATE departments SET location_id=3000 WHERE department_id=v_dept_id;
+DELETE FROM departments WHERE department_id=v_dept_id;
+END;
+
