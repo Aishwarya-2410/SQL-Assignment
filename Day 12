@@ -1,0 +1,86 @@
+Day 12 Assignment:
+
+
+1. Create and invoke a package that contains private and public constructs.
+a.    Create a package specification and a package body called EMP_PKG that contains the following procedures and function that you created earlier:
+i. add p_company_name as public construct and assing "HCLTECH" as value.
+ii.    PRINT_EMP_PERCENT_PROC procedure as a public construct
+iii.    EMP_DEPT_CURSOR_PROC procedure as a public construct
+IV.    GET_ANNUAL_COMP_FUNC function as a private construct
+b. -- add single comment line before each logic
+c.    Invoke all the four elements using package.element_name syntax.
+
+create or replace PACKAGE emp_pkg IS
+
+p_company_name VARCHAR2(20):='HCLTECH'; --Public Variable
+
+PROCEDURE print_emp_percent_proc; --Declared Public while creating package
+PROCEDURE emp_dept_cursor_proc;--Declared Public while creating package
+END emp_pkg;
+create or replace PACKAGE BODY emp_pkg AS
+
+FUNCTION get_annual_comp_func(func_sal IN FLOAT , func_comm IN FLOAT)
+RETURN FLOAT
+AS
+total_sal FLOAT:=0.0;
+
+BEGIN
+
+total_sal := total_sal + (12 * func_sal + (func_comm * 12 * func_sal ));
+
+
+IF(func_sal IS NULL) THEN
+RETURN NVL(func_sal,0);-- NVL function will replace Null values with 0
+
+ELSE
+RETURN total_sal;
+END IF;
+
+END get_annual_comp_func;
+
+
+PROCEDURE PRINT_EMP_PERCENT_PROC AS
+v_today DATE := SYSDATE;
+v_tomorrow v_today%TYPE; -- ANCHOR or REFERENCE DATA TYPE
+b_basic_percent NUMBER;
+b_pf_percent NUMBER;
+v_fname VARCHAR2(15);
+v_emp_sal NUMBER(10);
+BEGIN
+v_tomorrow := v_today + 1;
+SELECT first_name || ' ' || last_name, salary INTO v_fname, v_emp_sa
+FROM employees WHERE employee_id=110;
+DBMS_OUTPUT.PUT_LINE('Hello '|| v_fname);
+END print_emp_percent_proc;
+
+PROCEDURE emp_dept_cursor_proc AS
+CURSOR c_dept_cursor IS SELECT department_id,department_name FROM departments 
+WHERE  department_id<100 ORDER BY department_id;--cursor fetching values where department_id is less than 100
+CURSOR c_emp_cursor(dept_id departments.department_id%TYPE) IS SELECT last_name,employee_id,hire_date,salary FROM employees 
+WHERE dept_id=department_id AND dept_id<120;--cursor fetching values where department_id is less than 120
+dept_id departments.department_id%TYPE;
+dept_name departments.department_name%TYPE;
+emp_last_name employees.last_name%TYPE;
+job_id employees.employee_id%TYPE;
+h_d employees.hire_date%TYPE;
+
+sal employees.salary%TYPE;
+BEGIN
+OPEN c_dept_cursor;
+LOOP
+FETCH c_dept_cursor into dept_id,dept_name;--fetched values from first cursor and stored into variables
+EXIT WHEN c_dept_cursor%NOTFOUND;
+DBMS_OUTPUT.PUT_LINE(dept_id ||''|| dept_name);
+END LOOP;
+CLOSE c_dept_cursor;
+IF c_emp_cursor%ISOPEN=TRUE THEN CLOSE c_emp_cursor; END IF;-- checked if c_emp_cursor was already open and if true then closed it
+OPEN c_emp_cursor(dept_id);
+LOOP
+FETCH c_emp_cursor into emp_last_name,job_id,h_d,sal;--fetched values from second cursor and stored into variables
+EXIT WHEN c_emp_cursor%NOTFOUND;
+DBMS_OUTPUT.PUT_LINE(emp_last_name || ' '||job_id || ' '|| h_d ||' '|| sal);
+END LOOP;
+CLOSE c_emp_cursor;
+DBMS_OUTPUT.PUT_LINE('Salary: ' ||get_annual_comp_func(50.65,4));--private function called inside a public procedure
+END emp_dept_cursor_proc;
+END emp_pkg;
