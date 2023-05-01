@@ -1,0 +1,38 @@
+1.   Create the following code and save it in lab_09_02.sql script.
+a.    Create the emp table using following statement.
+DROP TABLE emp;
+
+
+CREATE TABLE emp AS SELECT * FROM employees; //Use your employee table name here
+UPDATE emp SET salary = salary * 1500;
+ALTER TABLE   emp  ADD stars    VARCHAR2(50);
+This script creates an emp table that is a replica of the employees table. It alters the emp table to add a new column, stars, of VARCHAR2 data type and  size 50. 
+b.    Create a PL/SQL ‘EMP_SAL_STAR_PROC’ that inserts an asterisk in the stars column for every $1000 of an employee’s salary. 
+c.    In the declarative section of the block, declare a variable v_empno of type emp.employee_id and initialize it to 176. 
+d.    Declare a variable v_asterisk of type emp.stars and initialize it to NULL.
+e.    Create a variable v_sal of type emp.salary. 
+f.    In the executable section, write logic to append an asterisk (*) to the string for every $1,000 of the salary. For example, if the employee earns $8,000, the string of asterisks should contain eight asterisks. If the employee earns $12,500, the string of asterisks should contain 13 asterisks. 
+g.    Update the stars column for the employee with the string of asterisks. Commit before the end of the block. 
+h.    Display the row from the emp table to verify whether your PL/SQL block has executed successfully.
+i.    Execute and save your script as lab_09_02_soln.sql. The output is as follows:
+
+
+SOLUTION:
+
+
+create or replace PROCEDURE EMP_SAL_STAR_PROC AS
+v_empno emp.employee_id%TYPE := 176;
+v_asterisk emp.stars%TYPE := NULL;
+v_sal emp.salary%TYPE;
+BEGIN
+SELECT ROUND(salary/1000) INTO v_sal FROM emp
+WHERE employee_id=v_empno;
+FOR i IN 1.. v_sal
+LOOP
+v_asterisk:=v_asterisk||'*';
+END LOOP;
+UPDATE emp SET stars=v_asterisk WHERE employee_id=176;
+COMMIT;
+END;
+
+ 
