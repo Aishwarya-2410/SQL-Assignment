@@ -1,0 +1,39 @@
+DAY 3: Assignment
+
+STEP 1: ALTER order_items_anbu TABLE to add another column called rating.
+STEP 2: UPDATE the rating cols as per below update statement..
+UPDATE order_items_anbu SET rating = MOD(unit_price,5);
+UPDATE order_items_anbu SET rating = 5 WHERE rating = 0;
+COMMIT;
+STEP 3: CREATE a view BEST_SELLER_RATING_VIEW_ANBU, to display rank, product name and
+include the rating logic for the best seller along with BEST_SELLER_VIEW_ANBU logic;
+
+STEP 4: SELECT * FROM BEST_SELLER_RATING_VIEW_ANBU;
+
+SOLUTION:
+
+ALTER TABLE ORDER_ITEMS_ANBU
+ADD RATING NUMBER(10);
+--STEP 2: 
+UPDATE order_items_anbu SET rating = MOD(unit_price,5);
+UPDATE order_items_anbu SET rating = 5 WHERE rating = 0;
+COMMIT;
+
+ 
+
+/*STEP 3: 
+
+CREATE OR REPLACE VIEW BEST_SELLER_RATING_VIEW_ANBU AS
+SELECT RANK() OVER(ORDER BY SUM(order_items_anbu.quantity)DESC,AVG(RATING) DESC)RANK,products_anbu.PRODUCT_NAME 
+FROM products_anbu
+INNER JOIN order_items_anbu
+ON products_anbu.product_id = order_items_anbu.product_id
+INNER JOIN orders_anbu
+ON order_items_anbu.order_id=orders_anbu.order_id
+WHERE orders_anbu.STATUS ='Shipped'
+GROUP BY products_anbu.PRODUCT_NAME
+ORDER BY SUM(order_items_anbu.quantity)DESC,AVG(RATING)DESC
+FETCH FIRST 5 ROWS ONLY;
+COMMIT;
+--STEP 4:
+SELECT * FROM BEST_SELLER_RATING_VIEW_ANBU;
