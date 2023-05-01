@@ -1,0 +1,35 @@
+DAY 3 ASSIGNMENT:
+ 
+
+Create a view named 'BEST_SELLER_VIEW_ANBU' with logic of select statement to display only names of top '5' selling products. 
+(uses the tables created on today.. all the tables ends with ANBU - executed via SME_Session_Exercises_1.sql)
+
+Execute below query and check only '5' product name is displayed..
+
+SELECT * FROM BEST_SELLER_VIEW_ANBU;
+
+ 
+
+ 
+SOLUTION:
+
+ 
+
+CREATE VIEW BEST_SELLER_VIEW_ANBU AS
+SELECT products_anbu.PRODUCT_NAME 
+FROM order_items_anbu
+LEFT JOIN products_anbu
+ON order_items_anbu.PRODUCT_ID = products_anbu.PRODUCT_ID
+JOIN orders_anbu
+ON order_items_anbu.order_id=orders_anbu.order_id
+WHERE orders_anbu.STATUS ='Shipped'
+GROUP BY products_anbu.PRODUCT_NAME
+ORDER BY SUM(order_items_anbu.QUANTITY) DESC
+FETCH FIRST 5 ROWS ONLY;
+
+ 
+SELECT * FROM best_seller_view_anbu
+
+
+
+ 
