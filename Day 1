@@ -1,0 +1,39 @@
+Day #1 Assignment:
+Visit and Refer Amazon site (create 3 tables with same name as given below in HCL Database - 52.191.224.7)
+Assignment: 
+    Create USER_CR Table (applicable constraints, pk, fk if applicable -> insert 5 records)
+    Create PRODUCT_CR table (applicable constraints, pk, fk if applicable  -> insert 5 records)
+    Create ORDER_CR table (applicable constraints, pk, fk if applicable  -> insert 5 records)
+
+
+ 
+
+SOLUTION:
+
+CREATE TABLE USER_CR (
+user_id INT PRIMARY KEY,
+username VARCHAR(50) NOT NULL,
+email VARCHAR(50) UNIQUE NOT NULL,
+referral_code VARCHAR(10) UNIQUE
+);
+
+ 
+
+
+CREATE TABLE PRODUCT_CR (
+product_id INT PRIMARY KEY,
+product_name VARCHAR(50) NOT NULL,
+price DECIMAL(10, 2) NOT NULL
+);
+
+ 
+
+
+CREATE TABLE ORDER_CR (
+order_id INT PRIMARY KEY,
+user_id INT NOT NULL,
+product_id INT NOT NULL,
+order_date DATE NOT NULL,
+FOREIGN KEY (user_id) REFERENCES USER_CR (user_id),
+FOREIGN KEY (product_id) REFERENCES PRODUCT_CR (product_id)
+);
