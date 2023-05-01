@@ -1,0 +1,42 @@
+Day 7 Assignments: Working with Composite Data Types
+<Create relevant tables or alter the table or insert records as per below assignments, verify where all the assignments are VALID no red mark in the Schema Explorer for all Procedure/View>
+
+ 
+
+Use the SQL/PLSQL Best Practices, Naming Convention, etc., without fail during all the assignments.
+
+
+1.    Create ‘PRINT_DEPT_NAME_ARR_PROC’ procedure by modifying procedure that you created in previous assignments to retrieve all 
+information about each department from the departments table and display the information. Use an associative array with the 
+INDEX BY table of records method.
+a.    Load the lab_10_01_soln.sql script.
+b.    You have declared the associative array to be of type departments.department_name. 
+Modify the declaration of the associative array to temporarily store the number, name, and location of all the departments. Use the %ROWTYPE attribute.
+c.    Modify the SELECT statement to retrieve all department information currently in the departments table and store it in the associative array.
+d.    Using another loop, retrieve the department information from the associative array and display the information.
+
+ 
+
+SOLUTION:
+
+ 
+
+create or replace PROCEDURE PRINT_DEPT_NAME_ARR_PROC AS
+TYPE dept_arr_table is table of departments%ROWTYPE INDEX BY PLS_INTEGER; -- associative array
+dept_table1 dept_arr_table;
+loop_count  INT := 4;
+v_dept_no INT :=0;
+BEGIN
+FOR i in 1..loop_count
+LOOP
+v_dept_no:=v_dept_no + 10;
+SELECT * INTO dept_table1(i) FROM departments WHERE department_id = v_dept_no;
+END LOOP;
+FOR i in 1..loop_count
+LOOP
+DBMS_OUTPUT.PUT_LINE('Department Number: '||dept_table1(i).department_id|| ' Department Name: '||dept_table1(i).department_name|| 
+' Location_id: '||dept_table1(i).location_id);
+END LOOP;
+END;
+
+ 
