@@ -1,0 +1,35 @@
+1. write a PL/SQL ‘EXCEP_02292_PROC’ that declares an exception for the Oracle Server error ORA-02292 (integrity constraint violated – child record found). The block tests for the exception and outputs the error message. 
+a.    In the declarative section, declare an exception e_childrecord_exists. Associate the declared exception with the standard Oracle Server error –02292. 
+b.    In the executable section, display “Deleting department 40....” Include a DELETE statement to delete the department with the department_id 40. 
+c.    Include an exception section to handle the e_childrecord_exists exception and display the appropriate message
+d. Add comments (--) to explain the reason for exception handling in your own words
+
+SOLUTION:
+
+SET SERVEROUTPUT ON;
+--delarative section
+CREATE OR REPLACE PROCEDURE EXCEP_02292_PROC IS
+e_childrecord_exists EXCEPTION;
+cnt_dept NUMBER(15);
+PRAGMA EXCEPTION_INIT(e_childrecord_exists,-02292);
+
+--executable section
+BEGIN
+DBMS_OUTPUT.PUT_LINE('Deleting department 40....');
+SELECT COUNT(*) INTO cnt_dept FROM employees WHERE department_id = 40;
+IF (cnt_dept > 0) THEN
+RAISE e_childrecord_exists;
+ELSE 
+DELETE departments WHERE department_id=40;
+END IF;
+EXCEPTION
+WHEN e_childrecord_exists THEN
+DBMS_OUTPUT.PUT_LINE('CHILD RECORD FOUND');
+END;
+/
+EXEC EXCEP_02292_PROC;
+
+/* THERE IS CHILD RECORD EXISTS IN THE EMPLOYEES TABLE WHERE DEPARTMENT ID = 40 SO CAN'T ABLE ABLE TO DELETE THE 
+PARENT RECORD IN DEPARTMENT TABLE */
+
+ 
