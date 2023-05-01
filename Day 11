@@ -1,0 +1,68 @@
+Day 11 Assignments: 
+
+(Create or Alter the required tables or Insert values as per below assignments into tables, insert records as well per below assignments, verify whether all the assignment objects are VALID no red mark in the Schema Explorer for all Procedure/View/Function before assignment submission)
+
+ 
+
+Use the SQL/PLSQL Best Practices, Naming Convention, etc., without fail during all the assignments.
+
+Create and invoke the GET_JOB_FUNC function to return a job title.
+
+Create and compile a function called GET_JOB_FUNC to return a job title.
+
+Add comments (--) to explain the reason about this function in your own words
+
+Create a VARCHAR2 variable called b_title, allowing a length of 35 characters. Retrieve the job title for the job ID SA_REP into variable from job table, and then return the variable.
+
+ 
+
+SOLUTION:
+
+CREATE TABLE JOBS(JOB_ID VARCHAR(20),JOB_TITLE VARCHAR2(35),MIN_SALARY FLOAT ,MAX_SALARY FLOAT);
+
+SET SERVEROUTPUT ON;
+CREATE OR REPLACE FUNCTION GET_JOB_FUNC(b_title jobs.job_id%TYPE) RETURN VARCHAR2 IS
+t jobs.job_title%TYPE;
+BEGIN
+SELECT job_title INTO t FROM jobs WHERE job_id = b_title;
+RETURN t;
+END GET_JOB_FUNC;
+/
+/*The GET_JOB_FUNC function will return the job title.for returning job title, variable b_title is passed into it. 
+To retrieve a data , have to call a function it needs parameter with function name*/
+DECLARE
+a VARCHAR2(35);
+BEGIN
+a:=GET_JOB_FUNC('SA_REP');
+DBMS_OUTPUT.PUT_LINE(a);
+END;
+/
+
+ 
+
+2.Create a function called GET_ANNUAL_COMP_FUNC to return the annual salary computed from an employee’s monthly salary and commission passed as parameters.
+
+Create the GET_ANNUAL_COMP_FUNC function, which accepts parameter values for the monthly salary and commission. Either or both values passed can be NULL, but the function should still return a non-NULL annual salary. Use the following basic formula to calculate the annual salary:
+
+(salary*12) + (commission_pct*salary*12)
+
+Add comments (--) to explain the details about this function in your own word
+Use the function in a SELECT statement against the EMPLOYEES table for employees in department 30.
+
+
+SOLUTION:
+
+alter table employees add commission_pct FLOAT(10);
+
+SET SERVEROUTPUT ON;
+CREATE OR REPLACE FUNCTION GET_ANNUAL_COMP_FUNC(e_sal IN employees.salary%TYPE,e_com IN employees.commission_pct%TYPE) RETURN NUMBER IS
+BEGIN
+RETURN NVL(e_sal,0)*12 + (NVL(e_com,0)*NVL(e_sal,0)*12);
+END GET_ANNUAL_COMP_FUNC;
+/
+/* salary and commission_pct is passed as argument to GET_ANNUAL_COMP_FUNC.
+It should return the not null values even the values be null. For this case , NVL function is used. NVL(column,value)-whenever have the null 
+values in the column it is substituted with some values */
+SELECT employee_id,first_name,GET_ANNUAL_COMP_FUNC(salary,commission_pct)"ANNUAL_SALARY" FROM employees WHERE department_id = 30;
+
+ 
