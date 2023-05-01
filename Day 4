@@ -1,0 +1,29 @@
+Day #4: Assignment
+
+CREATE VIEW MY_ORDERS_VIEW
+MONTH, CUSTOMER_NAME, Total # of Orders, # of Cancelled Orders,
+# of Pending Orders, # of Shipped Orders, Grant Total Order Amount (as single row for each customer ) order by month, 
+total amount descending order.. display only 5 records by sorting total amount descending 
+-- display 
+
+SELECT * FROM MY_ORDERS_VIEW;
+
+
+SOLUTION:
+
+
+CREATE  OR REPLACE VIEW MY_ORDERS_VIEW AS
+SELECT TO_CHAR(ORDER_DATE,'MON') "MONTH",c.name,
+COUNT(o.status) "TOTAL_ORDERS",
+SUM(CASE WHEN o.status='Canceled' THEN 1 ELSE 0 END)"CANCELED_ORDERS" ,
+SUM(CASE WHEN o.status='Pending' THEN 1 ELSE 0 END)"PENDING_ORDERS" ,
+SUM(CASE WHEN o.status='Shipped' THEN 1 ELSE 0 END)"SHIPPED_ORDERS" ,
+SUM(oi.unit_price) "TOTAL_AMOUNT"
+FROM customers_anbu c, orders_anbu o,order_items_anbu oi 
+WHERE c.customer_id= o.customer_id AND o.order_id = oi.order_id
+GROUP BY TO_CHAR(ORDER_DATE,'MON'),c.name
+ORDER BY TOTAL_AMOUNT DESC
+FETCH FIRST 5 ROWS ONLY;
+SELECT * FROM MY_ORDERS_VIEW;
+
+ 
